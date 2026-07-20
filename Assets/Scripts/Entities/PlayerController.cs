@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,15 +9,21 @@ namespace DungeonCore
     /// 플레이어 입력을 받아서 "액션"으로 변환하고, TurnManager에게 턴 처리를 요청한다.
     /// 실제 이동/공격 실행은 TakeTurn()에서 일어난다 (입력 시점과 실행 시점을 분리).
     /// </summary>
+    [RequireComponent(typeof(SpriteRenderer))]
     public class PlayerController : MonoBehaviour, ITurnActor
     {
         [SerializeField] private int maxHP = 20;
         [SerializeField] private int attack = 5;
         [SerializeField] private int defense = 2;
         [SerializeField] private float moveAnimSeconds = 0.12f;
+        [SerializeField] private Color fallbackColor = Color.cyan;
+
+        /// <summary>상호작용 키(E)를 눌렀을 때 발생. 계단 등은 이 이벤트를 구독해서 처리.</summary>
+        public event Action OnInteractPressed;
 
         public Combatant Combatant { get; private set; }
         public Vector2Int GridPosition { get; private set; }
+        public Inventory Inventory { get; private set; }
 
         private DungeonMap map;
 
@@ -34,8 +41,20 @@ namespace DungeonCore
         {
             map = dungeonMap;
             GridPosition = startPos;
-            Combatant = new Combatant("Player", maxHP, attack, defense);
             transform.position = GridUtils.GridToWorld(startPos);
+
+            // Init()은 층 이동 시에도 다시 호출됨 - Combatant/Inventory는 런 전체에 걸쳐
+            // 유지돼야 하므로 최초 1회만 생성 (안 그러면 층마다 체력/소지품이 초기화됨)
+            if (Combatant == null)
+                Combatant = new Combatant("Player", maxHP, attack, defense);
+            if (Inventory == null)
+                Inventory = new Inventory();
+
+            var spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer.sprite == null)
+                spriteRenderer.sprite = SpriteUtils.CreateSolidSprite(fallbackColor);
+            spriteRenderer.sortingOrder = 5; // 바닥/벽보다 항상 위에 그려지도록
+
             TurnManager.Instance.Register(this);
         }
 
@@ -43,6 +62,10 @@ namespace DungeonCore
         {
             if (TurnManager.Instance == null) return;
             if (TurnManager.Instance.State != TurnState.WaitingForPlayerInput) return;
+
+            // 상호작용(계단 등)은 턴을 소모하는 이동/공격과 별개로 취급
+            if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+                OnInteractPressed?.Invoke();
 
             Vector2Int dir = ReadDirectionInput();
             if (dir == Vector2Int.zero) return;
@@ -112,6 +135,7 @@ namespace DungeonCore
                 case ActionType.Move:
                     GridPosition = pendingTarget;
                     yield return StartCoroutine(AnimateMoveTo(pendingTarget));
+                    TryPickupItemAt(GridPosition);
                     break;
 
                 case ActionType.Attack:
@@ -153,6 +177,22 @@ namespace DungeonCore
                 yield return null;
             }
             transform.position = endPos;
+        }
+
+        private void TryPickupItemAt(Vector2Int pos)
+        {
+            var pickup = ItemPickup.FindAt(pos);
+            if (pickup == null) return;
+
+            if (Inventory.TryAdd(pickup.Item))
+            {
+                Debug.Log($"{pickup.Item.DisplayName} 획득 (x{pickup.Item.quantity})");
+                Destroy(pickup.gameObject);
+            }
+            else
+            {
+                Debug.Log("인벤토리가 가득 차서 주울 수 없습니다.");
+            }
         }
 
         public void TakeDamage(int amount)

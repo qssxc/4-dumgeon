@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace DungeonCore
 {
     /// <summary>
-    /// 2단계 테스트용 씬 초기화. DungeonGenerator로 절차적 던전을 만들고,
-    /// 몬스터는 특정 방이 아니라 던전 전역의 바닥 타일에서 랜덤 스폰한다.
+    /// 씬 초기화 + 층 전환을 담당. DungeonGenerator로 던전을 만들고,
+    /// 플레이어가 계단에서 상호작용(E)하면 현재 층을 정리하고 새 층을 생성한다.
     /// </summary>
     public class DungeonBootstrap : MonoBehaviour
     {
@@ -19,18 +18,105 @@ namespace DungeonCore
         [SerializeField] private int monsterCount = 12;
         [SerializeField] private int entranceSafeRadius = 4; // 입구 주변 이만큼은 스폰 제외
 
+        [Header("아이템")]
+        [SerializeField] private ItemPickup itemPickupPrefab;
+        [SerializeField] private System.Collections.Generic.List<ItemData> itemPool = new();
+        [SerializeField, Range(0f, 1f)] private float itemSpawnChancePerRoom = 0.35f;
+
+        private GameObject currentRendererGO;
+        private PlayerController currentPlayer;
+        private Vector2Int currentStairsPos;
+
         private void Start()
+        {
+            GenerateLevel();
+        }
+
+        private void GenerateLevel()
         {
             var generator = new DungeonGenerator();
             GeneratedDungeon dungeon = generator.Generate(settings);
 
+            // 이전 층 정리 (렌더러 오브젝트 + 몬스터 + 아이템 전부)
+            if (currentRendererGO != null) Destroy(currentRendererGO);
+            MonsterController.DestroyAll();
+            ItemPickup.DestroyAll();
+
+            var rendererGO = new GameObject("DungeonRenderer");
+            var renderer = rendererGO.AddComponent<DungeonRenderer>();
+            renderer.Render(dungeon);
+            currentRendererGO = rendererGO;
+
             Vector2Int playerStart = dungeon.Entrance.Center;
-            var player = Instantiate(playerPrefab);
-            player.Init(dungeon.Map, playerStart);
 
-            SpawnMonstersAcrossMap(dungeon, player, playerStart);
+            if (currentPlayer == null)
+            {
+                currentPlayer = Instantiate(playerPrefab);
+                currentPlayer.OnInteractPressed += HandleInteract; // 플레이어는 층 전환에도 유지, 구독은 최초 1회만
+            }
+            currentPlayer.Init(dungeon.Map, playerStart);
 
-            Debug.Log($"던전 생성 완료. 방 {dungeon.Rooms.Count}개, 몬스터 {monsterCount}마리. WASD로 이동/공격하세요.");
+            currentStairsPos = dungeon.Exit.StairsPosition;
+
+            SpawnMonstersAcrossMap(dungeon, currentPlayer, playerStart);
+            SpawnItems(dungeon);
+            SetupCamera(currentPlayer.transform);
+
+            int treasureCount = dungeon.Rooms.FindAll(r => r is TreasureRoom).Count;
+            int standardCount = dungeon.Rooms.FindAll(r => r is StandardRoom).Count;
+            Debug.Log($"던전 생성 완료. 방 {dungeon.Rooms.Count}개 " +
+                      $"(입구 1, 출구 1, 보물방 {treasureCount}, 일반 {standardCount}), " +
+                      $"몬스터 {monsterCount}마리. WASD로 이동/공격, 계단에서 E로 다음 층.");
+        }
+
+        private void HandleInteract()
+        {
+            if (currentPlayer.GridPosition != currentStairsPos) return;
+
+            Debug.Log("계단을 타고 다음 층으로 이동합니다.");
+            GenerateLevel();
+        }
+
+        private void SetupCamera(Transform playerTransform)
+        {
+            var cam = Camera.main;
+            if (cam == null)
+            {
+                Debug.LogWarning("Main Camera를 찾을 수 없습니다. 카메라 태그가 MainCamera인지 확인하세요.");
+                return;
+            }
+
+            if (cam.orthographic)
+                cam.orthographicSize = 8f; // 맵 전체가 아니라 플레이어 주변 일부만 보이게
+
+            var follow = cam.GetComponent<CameraFollow>();
+            if (follow == null) follow = cam.gameObject.AddComponent<CameraFollow>();
+            follow.target = playerTransform;
+
+            // 층이 바뀔 때마다 바로 플레이어 위치로 스냅 (Lerp로 서서히 다가가지 않도록)
+            cam.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, -10f);
+        }
+
+        private void SpawnItems(GeneratedDungeon dungeon)
+        {
+            if (itemPickupPrefab == null || itemPool.Count == 0) return;
+
+            foreach (var room in dungeon.Rooms)
+            {
+                // 보물방은 항상 1개 확정, 나머지는 방마다 확률 판정 (EntranceRoom/TunnelRoom은
+                // GetContentSpawnPoints()가 항상 빈 리스트를 주므로 자동으로 제외됨)
+                bool guaranteed = room is TreasureRoom;
+                if (!guaranteed && Random.value >= itemSpawnChancePerRoom) continue;
+
+                var points = room.GetContentSpawnPoints(1);
+                foreach (var point in points)
+                {
+                    var itemData = itemPool[Random.Range(0, itemPool.Count)];
+                    var instance = new ItemInstance(itemData, 1);
+                    var pickup = Instantiate(itemPickupPrefab);
+                    pickup.Init(instance, point);
+                }
+            }
         }
 
         private void SpawnMonstersAcrossMap(GeneratedDungeon dungeon, PlayerController player, Vector2Int playerStart)

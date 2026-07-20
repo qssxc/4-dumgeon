@@ -9,9 +9,12 @@ namespace DungeonCore
     /// 이동은 A* 없이 "거리를 줄이는 방향" 그리디 방식으로 처리 (1단계에서는 충분).
     /// 나중에 통로가 복잡해지면 Pathfinder 클래스로 교체.
     /// </summary>
+    [RequireComponent(typeof(SpriteRenderer))]
     public class MonsterController : MonoBehaviour, ITurnActor
     {
         private static readonly List<MonsterController> all = new();
+
+        [SerializeField] private Color fallbackColor = Color.red;
 
         public MonsterData Data { get; private set; }
         public Combatant Combatant { get; private set; }
@@ -32,6 +35,11 @@ namespace DungeonCore
             GridPosition = startPos;
             Combatant = new Combatant(data.monsterName, data.maxHP, data.attack, data.defense);
             transform.position = GridUtils.GridToWorld(startPos);
+
+            var spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer.sprite == null)
+                spriteRenderer.sprite = SpriteUtils.CreateSolidSprite(fallbackColor);
+            spriteRenderer.sortingOrder = 4; // 바닥/벽보다 위, 플레이어보다는 아래
 
             all.Add(this);
             TurnManager.Instance.Register(this);
@@ -138,14 +146,21 @@ namespace DungeonCore
 
         public void Die()
         {
-            all.Remove(this);
-            TurnManager.Instance.Unregister(this);
-            Destroy(gameObject);
+            Destroy(gameObject); // 실제 정리는 OnDestroy()에서 일괄 처리 (중복 방지)
         }
 
         private void OnDestroy()
         {
             all.Remove(this);
+            TurnManager.Instance?.Unregister(this); // Destroy()로 직접 없앨 때도 등록이 안 남도록
+        }
+
+        /// <summary>레벨 전환 시 현재 층의 몬스터를 전부 정리할 때 사용.</summary>
+        public static void DestroyAll()
+        {
+            // 순회 중 리스트가 변경되므로 복사본으로 순회
+            foreach (var monster in new List<MonsterController>(all))
+                Destroy(monster.gameObject);
         }
     }
 }

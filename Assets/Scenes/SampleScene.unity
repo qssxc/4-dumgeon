@@ -413,12 +413,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b15276a77f8b684d8643385a1f07d70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.DungeonBootstrap
-  mapWidth: 10
-  mapHeight: 10
   playerPrefab: {fileID: 3794721979966907620, guid: 39e7115a3e1f3ff429dcc1bc66cfddf3, type: 3}
   monsterPrefab: {fileID: 97355644150116190, guid: 7db36847a4206b042808faa11d988f90, type: 3}
   ratData: {fileID: 11400000, guid: 50843ecbbf240e5428c035a2f000b0ed, type: 2}
   monsterCount: 3
+  entranceSafeRadius: 4
+  itemPickupPrefab: {fileID: 1338294735623707315, guid: b57c4934094066845bf9092ba0481ee8, type: 3}
+  itemPool:
+  - {fileID: 11400000, guid: 740b35c3d3b23864bada335ff38536d7, type: 2}
+  - {fileID: 11400000, guid: 23cd34b2694d9454198d0bf44a51d9a2, type: 2}
+  itemSpawnChancePerRoom: 0.35
 --- !u!4 &728664903
 Transform:
   m_ObjectHideFlags: 0
