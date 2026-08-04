@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace DungeonCore
 {
     /// <summary>
@@ -25,6 +27,77 @@ namespace DungeonCore
         public void Identify()
         {
             IdentifyManager.Instance.MarkIdentified(data);
+        }
+
+        /// <summary>
+        /// 아이템 사용의 진입점. 무기/방어구는 장착(소모되지 않음),
+        /// 그 외(포션/스크롤 등)는 아직 효과가 더미이며 사용하면 하나 줄어든다.
+        /// </summary>
+        public bool Use(PlayerController user)
+        {
+            Identify(); // 원작처럼 사용하는 순간 그 종류 전체가 감정됨
+
+            bool isEquipment = data.itemType == ItemType.Weapon || data.itemType == ItemType.Armor;
+            if (isEquipment)
+            {
+                // 이미 착용 중인 걸 다시 누르면 해제
+                if (user.Equipment.IsEquipped(this))
+                {
+                    user.Equipment.Unequip(data.itemType);
+                    Debug.Log($"{DisplayName} 해제");
+                    return true;
+                }
+
+                // 같은 슬롯에 있던 기존 장비는 인벤토리로 되돌림
+                var previous = user.Equipment.Equip(this);
+                if (previous != null)
+                    Debug.Log($"{previous.DisplayName} 해제하고 {DisplayName} 장착");
+                else
+                    Debug.Log($"{DisplayName} 장착");
+
+                Debug.Log($"현재 공격력 {user.Combatant.attack}, 방어력 {user.Combatant.defense}");
+                return true; // 장비는 인벤토리에서 사라지지 않음
+            }
+
+            Debug.Log($"{DisplayName} 사용");
+            ApplyEffect(user);
+            user.Inventory.Remove(this, 1);
+            return true;
+        }
+
+        /// <summary>
+        /// ItemData에 설정된 소비 효과를 실제로 적용. 데이터 주도 방식이라
+        /// 새 효과를 추가할 때 여기 케이스만 늘리고 ConsumableEffect enum에 항목을 추가하면 된다.
+        /// </summary>
+        private void ApplyEffect(PlayerController user)
+        {
+            var c = user.Combatant;
+            switch (data.effect)
+            {
+                case ConsumableEffect.Heal:
+                    int healed = c.Heal(data.effectAmount);
+                    Debug.Log($"체력 {healed} 회복 (현재 {c.currentHP}/{c.maxHP})");
+                    break;
+
+                case ConsumableEffect.Strength:
+                    c.AddPermanentAttack(data.effectAmount);
+                    Debug.Log($"공격력이 영구적으로 {data.effectAmount} 상승 (현재 {c.attack})");
+                    break;
+
+                case ConsumableEffect.Haste:
+                    c.ApplyHaste(data.effectAmount, data.effectDuration);
+                    Debug.Log($"{data.effectDuration}턴 동안 속도 +{data.effectAmount}");
+                    break;
+
+                case ConsumableEffect.Fire:
+                    Debug.Log("화염 효과는 아직 미구현 (환경 효과는 다음 단계)");
+                    break;
+
+                case ConsumableEffect.None:
+                default:
+                    Debug.Log("이 아이템은 별다른 효과가 없다");
+                    break;
+            }
         }
     }
 }

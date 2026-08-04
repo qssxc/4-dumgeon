@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Item
   description: 
   itemType: 2
-  icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   stackable: 0
   maxStack: 1
   identifiedByDefault: 0

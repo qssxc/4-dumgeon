@@ -222,10 +222,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 500
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -422,7 +422,19 @@ MonoBehaviour:
   itemPool:
   - {fileID: 11400000, guid: 740b35c3d3b23864bada335ff38536d7, type: 2}
   - {fileID: 11400000, guid: 23cd34b2694d9454198d0bf44a51d9a2, type: 2}
+  - {fileID: 11400000, guid: a5bd7f82edd5181458a2a6773c0b5ed0, type: 2}
   itemSpawnChancePerRoom: 0.35
+  appearancePools:
+  - groupName: Potion
+    appearanceNames:
+    - "\uD0C1\uD55C \uD3EC\uC158"
+    - "\uB9D1\uC740 \uD3EC\uC158"
+  characterClasses:
+  - {fileID: 11400000, guid: bc3ce3508c0c0264d94477169fb25f74, type: 2}
+  - {fileID: 11400000, guid: 55b4a65e09b0cb14fb149d9778d71347, type: 2}
+  - {fileID: 11400000, guid: 527ea31c771a8954682ecdc6e4f84724, type: 2}
+  - {fileID: 11400000, guid: 2c23a1634220ca243bc259a73547fc76, type: 2}
+  cameraOrthoSize: 5
 --- !u!4 &728664903
 Transform:
   m_ObjectHideFlags: 0

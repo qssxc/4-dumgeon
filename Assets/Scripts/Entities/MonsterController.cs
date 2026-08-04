@@ -22,6 +22,8 @@ namespace DungeonCore
 
         private DungeonMap map;
         private PlayerController player;
+        private SpriteAnimator spriteAnimator;
+        private SpriteRenderer spriteRenderer;
 
         public int Speed => Data.speed;
         public float Energy { get; set; }
@@ -36,10 +38,16 @@ namespace DungeonCore
             Combatant = new Combatant(data.monsterName, data.maxHP, data.attack, data.defense);
             transform.position = GridUtils.GridToWorld(startPos);
 
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            if (spriteRenderer.sprite == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (data.sprite != null)
+                spriteRenderer.sprite = data.sprite;
+            else if (spriteRenderer.sprite == null)
                 spriteRenderer.sprite = SpriteUtils.CreateSolidSprite(fallbackColor);
             spriteRenderer.sortingOrder = 4; // 바닥/벽보다 위, 플레이어보다는 아래
+
+            spriteAnimator = GetComponent<SpriteAnimator>(); // 없으면 null - 애니메이션 없이 동작
+            if (spriteAnimator != null && data.idleFrames != null && data.idleFrames.Length > 0)
+                spriteAnimator.SetIdleFrames(data.idleFrames, data.idleFps);
 
             all.Add(this);
             TurnManager.Instance.Register(this);
@@ -70,6 +78,11 @@ namespace DungeonCore
             // 인접 -> 공격
             if (distToPlayer == 1)
             {
+                UpdateFacing(player.GridPosition - GridPosition);
+
+                if (spriteAnimator != null && Data.attackFrames != null && Data.attackFrames.Length > 0)
+                    yield return StartCoroutine(spriteAnimator.PlayOnce(Data.attackFrames, Data.attackAnimSeconds));
+
                 var result = CombatResolver.Resolve(Combatant, player.Combatant);
                 if (result.didHit)
                 {
@@ -104,6 +117,9 @@ namespace DungeonCore
 
             if (bestMove != GridPosition)
             {
+                UpdateFacing(bestMove - GridPosition);
+                if (spriteAnimator != null && Data.walkFrames != null && Data.walkFrames.Length > 0)
+                    StartCoroutine(spriteAnimator.PlayOnce(Data.walkFrames, Data.walkAnimSeconds));
                 GridPosition = bestMove;
                 yield return StartCoroutine(AnimateMoveTo(bestMove));
             }
@@ -125,8 +141,18 @@ namespace DungeonCore
             if (candidates.Count == 0) yield break;
 
             var target = candidates[Random.Range(0, candidates.Count)];
+            UpdateFacing(target - GridPosition);
+            if (spriteAnimator != null && Data.walkFrames != null && Data.walkFrames.Length > 0)
+                StartCoroutine(spriteAnimator.PlayOnce(Data.walkFrames, Data.walkAnimSeconds));
             GridPosition = target;
             yield return StartCoroutine(AnimateMoveTo(target));
+        }
+
+        /// <summary>이동/공격 방향에 따라 스프라이트 좌우 뒤집기 (좌우 성분 있을 때만).</summary>
+        private void UpdateFacing(Vector2Int dir)
+        {
+            if (dir.x == 0) return;
+            spriteRenderer.flipX = dir.x < 0;
         }
 
         private IEnumerator AnimateMoveTo(Vector2Int gridPos)

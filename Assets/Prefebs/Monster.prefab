@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8778144017643714539}
   - component: {fileID: 7591596562094491596}
   - component: {fileID: 97355644150116190}
+  - component: {fileID: 5283205100208115196}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 6837526499156743611, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -104,3 +105,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffb77ec5ae4b0b54f9e9cbfad24c5138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.MonsterController
+  fallbackColor: {r: 1, g: 0, b: 0, a: 1}
+  wanderChance: 0.5
+--- !u!114 &5283205100208115196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6890524292212206594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef84dca97b05ca46965a3163dfc0682, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.SpriteAnimator
+  idleFrames: []
+  idleFps: 4

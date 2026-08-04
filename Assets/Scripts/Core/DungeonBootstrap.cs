@@ -22,13 +22,37 @@ namespace DungeonCore
         [SerializeField] private ItemPickup itemPickupPrefab;
         [SerializeField] private System.Collections.Generic.List<ItemData> itemPool = new();
         [SerializeField, Range(0f, 1f)] private float itemSpawnChancePerRoom = 0.35f;
+        [SerializeField] private System.Collections.Generic.List<AppearancePool> appearancePools = new();
+
+        [Header("캐릭터 선택 (시연용)")]
+        [SerializeField] private System.Collections.Generic.List<CharacterClassData> characterClasses = new();
 
         private GameObject currentRendererGO;
         private PlayerController currentPlayer;
         private Vector2Int currentStairsPos;
 
+        private CharacterSelectUI selectUI;
+
         private void Start()
         {
+            // 타이틀 화면은 이제 별도 MainMenu 씬 담당. Game 씬에 진입하면 캐릭터 선택부터 시작.
+
+            // 새 게임 시작 시 한 번만 초기화 - 층 전환마다 다시 부르면 감정 상태가 리셋되므로
+            // GenerateLevel()이 아니라 여기(최초 1회만 실행되는 Start)에 둔다.
+            IdentifyManager.CreateNew(itemPool, appearancePools);
+
+            selectUI = gameObject.AddComponent<CharacterSelectUI>();
+            selectUI.classes = characterClasses;
+            selectUI.OnClassChosen += OnCharacterChosen;
+            selectUI.Show();
+        }
+
+        private CharacterClassData selectedClass;
+
+        private void OnCharacterChosen(CharacterClassData chosenClass)
+        {
+            // 시연용이라 선택된 클래스의 스탯은 아직 반영하지 않지만, 외형은 적용됨.
+            selectedClass = chosenClass;
             GenerateLevel();
         }
 
@@ -53,6 +77,10 @@ namespace DungeonCore
             {
                 currentPlayer = Instantiate(playerPrefab);
                 currentPlayer.OnInteractPressed += HandleInteract; // 플레이어는 층 전환에도 유지, 구독은 최초 1회만
+                currentPlayer.ApplyClass(selectedClass);           // 선택된 클래스 외형 적용 (Init 전에)
+
+                var inventoryUI = currentPlayer.gameObject.AddComponent<InventoryUI>();
+                inventoryUI.player = currentPlayer;
             }
             currentPlayer.Init(dungeon.Map, playerStart);
 
@@ -77,6 +105,9 @@ namespace DungeonCore
             GenerateLevel();
         }
 
+        [Header("카메라")]
+        [SerializeField] private float cameraOrthoSize = 8f; // 값이 작을수록 확대됨. 0 이하면 카메라 현재 값을 그대로 유지.
+
         private void SetupCamera(Transform playerTransform)
         {
             var cam = Camera.main;
@@ -86,8 +117,9 @@ namespace DungeonCore
                 return;
             }
 
-            if (cam.orthographic)
-                cam.orthographicSize = 8f; // 맵 전체가 아니라 플레이어 주변 일부만 보이게
+            // cameraOrthoSize가 0 이하면 인스펙터에서 직접 맞춘 카메라 값을 존중해서 건드리지 않음
+            if (cam.orthographic && cameraOrthoSize > 0f)
+                cam.orthographicSize = cameraOrthoSize;
 
             var follow = cam.GetComponent<CameraFollow>();
             if (follow == null) follow = cam.gameObject.AddComponent<CameraFollow>();
