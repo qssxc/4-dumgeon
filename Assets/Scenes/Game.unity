@@ -422,7 +422,6 @@ MonoBehaviour:
   itemPool:
   - {fileID: 11400000, guid: 740b35c3d3b23864bada335ff38536d7, type: 2}
   - {fileID: 11400000, guid: 23cd34b2694d9454198d0bf44a51d9a2, type: 2}
-  - {fileID: 11400000, guid: a5bd7f82edd5181458a2a6773c0b5ed0, type: 2}
   itemSpawnChancePerRoom: 0.35
   appearancePools:
   - groupName: Potion

@@ -18,14 +18,14 @@ MonoBehaviour:
   defense: 1
   speed: 100
   detectRange: 5
-  sprite: {fileID: 6837526499156743611, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
+  sprite: {fileID: -1345304132488669475, guid: c64db227499d7df4aa16dab39b0804dc, type: 3}
   idleFrames: []
   walkFrames: []
   attackFrames:
-  - {fileID: 6837526499156743611, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
-  - {fileID: -1919748919893352113, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
-  - {fileID: 3058995480578089050, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
-  - {fileID: 6837526499156743611, guid: d23b7e9bcc099ae49a9d8cc5997a3fdc, type: 3}
+  - {fileID: -1345304132488669475, guid: c64db227499d7df4aa16dab39b0804dc, type: 3}
+  - {fileID: -6285768045028282436, guid: c64db227499d7df4aa16dab39b0804dc, type: 3}
+  - {fileID: 957376237787237934, guid: c64db227499d7df4aa16dab39b0804dc, type: 3}
+  - {fileID: -1345304132488669475, guid: c64db227499d7df4aa16dab39b0804dc, type: 3}
   idleFps: 4
   walkAnimSeconds: 0.25
   attackAnimSeconds: 0.3

@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6501836383514372697, guid: 8273712102024dc4fb8476ba034e0282, type: 3}
+  m_Sprite: {fileID: -7437757966761623278, guid: b32155b46852b3b4eb8d058f100bac20, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   defense: 2
   moveAnimSeconds: 0.12
   fallbackColor: {r: 0, g: 1, b: 1, a: 1}
-  walkAnimSeconds: 0.2
+  walkAnimSeconds: 0.3
   attackAnimSeconds: 0.4
 --- !u!114 &6984037031610508210
 MonoBehaviour:

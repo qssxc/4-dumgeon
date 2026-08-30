@@ -26,6 +26,7 @@ namespace DungeonCore
         private Sprite[] attackFrames;
 
         private SpriteAnimator spriteAnimator;
+        private ThrowTargeting throwTargeting;
 
         /// <summary>상호작용 키(E)를 눌렀을 때 발생. 계단 등은 이 이벤트를 구독해서 처리.</summary>
         public event Action OnInteractPressed;
@@ -99,6 +100,9 @@ namespace DungeonCore
 
             spriteAnimator = GetComponent<SpriteAnimator>(); // 없으면 null - 애니메이션 없이 동작
 
+            throwTargeting = GetComponent<ThrowTargeting>();
+            if (throwTargeting == null) throwTargeting = gameObject.AddComponent<ThrowTargeting>();
+
             TurnManager.Instance.Register(this);
         }
 
@@ -107,6 +111,9 @@ namespace DungeonCore
             if (TurnManager.Instance == null) return;
             if (TurnManager.Instance.State != TurnState.WaitingForPlayerInput) return;
 
+            // 조준 모드 중에는 이동/사용 입력을 막음 (ThrowTargeting이 마우스 입력을 처리)
+            if (throwTargeting != null && throwTargeting.IsAiming) return;
+
             // 상호작용(계단 등)은 턴을 소모하는 이동/공격과 별개로 취급
             if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
                 OnInteractPressed?.Invoke();
@@ -114,7 +121,13 @@ namespace DungeonCore
             int itemSlot = ReadItemSlotInput();
             if (itemSlot >= 0)
             {
-                TryUseItem(itemSlot);
+                bool throwMode = Keyboard.current != null &&
+                    (Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed);
+
+                if (throwMode)
+                    TryThrowItem(itemSlot);
+                else
+                    TryUseItem(itemSlot);
                 return; // 같은 프레임에 이동 입력까지 처리하지 않도록
             }
 
@@ -141,6 +154,42 @@ namespace DungeonCore
                     return i;
 
             return -1;
+        }
+
+        private void TryThrowItem(int slotIndex)
+        {
+            if (Inventory == null) return;
+            if (slotIndex < 0 || slotIndex >= Inventory.Items.Count) return;
+
+            var item = Inventory.Items[slotIndex];
+            if (!item.data.throwable)
+            {
+                Debug.Log($"{item.DisplayName}은(는) 던질 수 없다");
+                return;
+            }
+
+            if (throwTargeting == null)
+            {
+                Debug.LogWarning("ThrowTargeting 컴포넌트가 없습니다.");
+                return;
+            }
+
+            Debug.Log($"{item.DisplayName} 던지기 - 목표 타일을 클릭하세요 (우클릭/ESC 취소)");
+            throwTargeting.BeginAiming(
+                onConfirm: target => OnThrowConfirmed(item, target),
+                onCancel: () => Debug.Log("던지기 취소"));
+        }
+
+        private void OnThrowConfirmed(ItemInstance item, Vector2Int target)
+        {
+            item.Identify();
+            Debug.Log($"{item.DisplayName}을(를) {target}에 던짐");
+
+            // 던진 아이템의 효과를 대상 타일에 발동 (지금은 도착 알림만 - 실제 화염 효과는 다음 단계)
+            item.OnThrownTo(this, target);
+
+            Inventory.Remove(item, 1);
+            TurnManager.Instance.RequestProcessTurn(); // 던지기도 턴 소모
         }
 
         private void TryUseItem(int slotIndex)

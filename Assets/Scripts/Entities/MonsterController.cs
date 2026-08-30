@@ -152,7 +152,7 @@ namespace DungeonCore
         private void UpdateFacing(Vector2Int dir)
         {
             if (dir.x == 0) return;
-            spriteRenderer.flipX = dir.x < 0;
+            spriteRenderer.flipX = dir.x > 0;
         }
 
         private IEnumerator AnimateMoveTo(Vector2Int gridPos)

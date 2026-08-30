@@ -17,8 +17,22 @@ MonoBehaviour:
   portrait: {fileID: -7437757966761623278, guid: b32155b46852b3b4eb8d058f100bac20, type: 3}
   baseSprite: {fileID: 0}
   idleFrames: []
-  walkFrames: []
-  attackFrames: []
+  walkFrames:
+  - {fileID: -4837264130274612374, guid: 8fe01543a7f3802458de874880c65938, type: 3}
+  - {fileID: -4880897353157797148, guid: 8fe01543a7f3802458de874880c65938, type: 3}
+  - {fileID: -6937816683812585768, guid: 8fe01543a7f3802458de874880c65938, type: 3}
+  - {fileID: 4545672191768459750, guid: 8fe01543a7f3802458de874880c65938, type: 3}
+  - {fileID: -4837264130274612374, guid: 8fe01543a7f3802458de874880c65938, type: 3}
+  attackFrames:
+  - {fileID: -5361911120467025524, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: -5277851858981999946, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: -9139519079208365313, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: -1412343718295416247, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: 3612271648356178466, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: 1429708458867995318, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: 1359402383890345093, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: -3673038779312929506, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
+  - {fileID: -9209380418438217392, guid: 0bdec89fb149dc94b93fb23f7ca7418d, type: 3}
   idleFps: 4
   startingHP: 20
   startingAttack: 5

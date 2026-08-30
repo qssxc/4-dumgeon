@@ -99,5 +99,21 @@ namespace DungeonCore
                     break;
             }
         }
+        /// <summary>
+        /// 이 아이템이 target 타일로 던져졌을 때 호출. 지금은 도착 알림만 하고,
+        /// 실제 효과(화염 타일 생성 등)는 다음 단계에서 TileEffectManager와 연결한다.
+        /// </summary>
+        public void OnThrownTo(PlayerController thrower, Vector2Int target)
+        {
+            switch (data.effect)
+            {
+                case ConsumableEffect.Fire:
+                    Debug.Log($"{target}에 화염 포션이 깨졌다 (화염 타일 효과는 다음 단계)");
+                    break;
+                default:
+                    Debug.Log($"{DisplayName}을(를) 던졌지만 깨져도 별 효과가 없다");
+                    break;
+            }
+        }
     }
 }

@@ -43,6 +43,9 @@ namespace DungeonCore
         public bool stackable = false;
         public int maxStack = 1;
 
+        [Header("투척")]
+        public bool throwable = false; // 던질 수 있는 아이템인지 (포션, 투척무기 등)
+
         [Header("감정(Identify)")]
         [Tooltip("체크하면 항상 감정된 상태로 시작 (무기/방어구/음식 등). 포션/스크롤/반지류는 보통 false.")]
         public bool identifiedByDefault = true;

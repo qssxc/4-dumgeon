@@ -10,13 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2b5728eddd72f14ca760dadfc20504c, type: 3}
-  m_Name: positon
+  m_Name: Power
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.ItemData
   itemName: Item
   description: 
   itemType: 2
-  icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: -352006592386147412, guid: 6e08301771427e048a09f5260831890b, type: 3}
   stackable: 0
   maxStack: 1
-  identifiedByDefault: 0
-  appearanceGroup: Potion
+  identifiedByDefault: 1
+  appearanceGroup: 
+  attackBonus: 0
+  defenseBonus: 0
+  effect: 2
+  effectAmount: 1
+  effectDuration: 0
