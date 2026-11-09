@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1805842546e000a458b2ce59143b8b97, type: 3}
+  m_Name: Chapchap
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.CharacterClassData
+  className: "\uCC71\uCC71"
+  description: 
+  portrait: {fileID: -6339787299842609576, guid: 59f4902d003aeb34b869d742f2305b75, type: 3}
+  baseSprite: {fileID: -6339787299842609576, guid: 59f4902d003aeb34b869d742f2305b75, type: 3}
+  idleFrames: []
+  walkFrames:
+  - {fileID: 7692426892060964659, guid: 4147e95aedece0d44997c2c2a49b03eb, type: 3}
+  - {fileID: 9063296212201467714, guid: 4147e95aedece0d44997c2c2a49b03eb, type: 3}
+  - {fileID: 4428853148736248427, guid: 4147e95aedece0d44997c2c2a49b03eb, type: 3}
+  - {fileID: -1657931771477009943, guid: 4147e95aedece0d44997c2c2a49b03eb, type: 3}
+  attackFrames:
+  - {fileID: -2206768074366160858, guid: 8d41c7330b954484596e973633cc126b, type: 3}
+  - {fileID: 6912908648335526171, guid: 8d41c7330b954484596e973633cc126b, type: 3}
+  - {fileID: -3638214661695356566, guid: 8d41c7330b954484596e973633cc126b, type: 3}
+  - {fileID: -2996823122994814228, guid: 8d41c7330b954484596e973633cc126b, type: 3}
+  - {fileID: 8469501371781041302, guid: 8d41c7330b954484596e973633cc126b, type: 3}
+  idleFps: 4
+  startingHP: 20
+  startingAttack: 5
+  startingDefense: 2
+  talents:
+  - {fileID: 11400000, guid: e1151d141e1f04c46b3c26e32822ab73, type: 2}
+  - {fileID: 11400000, guid: fb2ccfa57f8357f41b026d47ad2b4ec7, type: 2}
+  - {fileID: 11400000, guid: 4aa4344e4f2c279458a5117ea7c6c4b8, type: 2}
+  - {fileID: 11400000, guid: cd21755d255b2c9489e049a75381e139, type: 2}

@@ -24,5 +24,8 @@ namespace DungeonCore
         public int startingHP = 20;
         public int startingAttack = 5;
         public int startingDefense = 2;
+
+        [Header("특성 (클래스당 4개 권장, 각 0~2레벨)")]
+        public System.Collections.Generic.List<TalentData> talents = new();
     }
 }

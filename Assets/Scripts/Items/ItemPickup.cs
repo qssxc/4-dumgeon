@@ -11,9 +11,18 @@ namespace DungeonCore
     public class ItemPickup : MonoBehaviour
     {
         private static readonly List<ItemPickup> all = new();
+        public static IReadOnlyList<ItemPickup> All => all;
 
         public ItemInstance Item { get; private set; }
         public Vector2Int GridPosition { get; private set; }
+
+        private SpriteRenderer spriteRenderer;
+
+        /// <summary>fog of war: 시야 밖이면 바닥 아이템을 숨긴다.</summary>
+        public void SetSeen(bool seen)
+        {
+            if (spriteRenderer != null) spriteRenderer.enabled = seen;
+        }
 
         public void Init(ItemInstance item, Vector2Int gridPosition)
         {
@@ -21,10 +30,17 @@ namespace DungeonCore
             GridPosition = gridPosition;
             transform.position = GridUtils.GridToWorld(gridPosition);
 
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = item.data.icon != null
-                ? item.data.icon
-                : SpriteUtils.CreateSolidSprite(ColorForType(item.data.itemType));
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (item.DisplayIcon != null)
+            {
+                spriteRenderer.sprite = item.DisplayIcon;
+            }
+            else
+            {
+                // 아이콘 없으면 색 사각형 - 미감정이면 겉모습 색, 아니면 타입 색
+                Color c = item.DisplayColor != Color.white ? item.DisplayColor : ColorForType(item.data.itemType);
+                spriteRenderer.sprite = SpriteUtils.CreateSolidSprite(c);
+            }
             spriteRenderer.sortingOrder = 3; // 바닥/문보다 위, 몬스터/플레이어보다 아래
 
             all.Add(this);
@@ -37,6 +53,7 @@ namespace DungeonCore
             {
                 ItemType.Weapon => new Color(0.7f, 0.7f, 0.75f),
                 ItemType.Armor => new Color(0.5f, 0.4f, 0.3f),
+                ItemType.Ring => new Color(0.9f, 0.8f, 0.3f),
                 ItemType.Potion => new Color(0.8f, 0.2f, 0.6f),
                 ItemType.Scroll => new Color(0.9f, 0.85f, 0.6f),
                 ItemType.Wand => new Color(0.3f, 0.6f, 0.9f),

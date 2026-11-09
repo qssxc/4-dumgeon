@@ -10,6 +10,17 @@ namespace DungeonCore
     /// </summary>
     public class DungeonRenderer : MonoBehaviour
     {
+        /// <summary>한 타일의 렌더러 + 원래 색(fog of war가 밝기를 조절할 때 기준값).</summary>
+        public class TileVisual
+        {
+            public SpriteRenderer renderer;
+            public Color baseColor;
+        }
+
+        // 좌표별로 그 자리에 그려진 렌더러들(바닥 위에 문/계단이 겹칠 수 있어 리스트).
+        private readonly Dictionary<Vector2Int, List<TileVisual>> tileVisuals = new();
+        public IReadOnlyDictionary<Vector2Int, List<TileVisual>> TileVisuals => tileVisuals;
+
         [SerializeField] private Color floorColor = new Color(0.55f, 0.55f, 0.6f);
         [SerializeField] private Color wallColor = new Color(0.12f, 0.12f, 0.15f);
 
@@ -54,12 +65,12 @@ namespace DungeonCore
                     if (c == floorColor) continue; // StandardRoom은 굳이 표시 안 함
 
                     for (int x = room.Bounds.xMin; x < room.Bounds.xMax; x++)
-                        for (int y = room.Bounds.yMin; y < room.Bounds.yMax; y++)
-                        {
-                            var pos = new Vector2Int(x, y);
-                            if (map.IsWalkable(pos))
-                                roomTileColor[pos] = c;
-                        }
+                    for (int y = room.Bounds.yMin; y < room.Bounds.yMax; y++)
+                    {
+                        var pos = new Vector2Int(x, y);
+                        if (map.IsWalkable(pos))
+                            roomTileColor[pos] = c;
+                    }
                 }
             }
 
@@ -111,6 +122,14 @@ namespace DungeonCore
             renderer.sprite = sprite;
             renderer.color = color;
             renderer.sortingOrder = sortingOrder;
+
+            if (!tileVisuals.TryGetValue(gridPos, out var list))
+            {
+                list = new List<TileVisual>();
+                tileVisuals[gridPos] = list;
+            }
+            list.Add(new TileVisual { renderer = renderer, baseColor = color });
         }
     }
 }
+

@@ -75,5 +75,38 @@ namespace DungeonCore
             // 대각선 이동을 고려한 거리 (8방향 이동 시 실제 도달 턴 수와 일치)
             return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
         }
+
+        /// <summary>
+        /// from -> to 사이에 벽이 없는지(직선 시야가 트였는지) 검사.
+        /// Bresenham 직선으로 중간 칸들을 훑어 하나라도 막혀 있으면 false.
+        /// 양 끝 칸(몬스터 위치, 플레이어 위치)은 검사에서 제외한다.
+        /// 원거리 몬스터가 "쏠 수 있는지" 판단할 때 사용.
+        /// </summary>
+        public static bool HasLineOfSight(DungeonMap map, Vector2Int from, Vector2Int to)
+        {
+            int x0 = from.x, y0 = from.y;
+            int x1 = to.x, y1 = to.y;
+
+            int dx = Mathf.Abs(x1 - x0);
+            int dy = Mathf.Abs(y1 - y0);
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+            int err = dx - dy;
+
+            int x = x0, y = y0;
+            while (true)
+            {
+                if (x == x1 && y == y1) break;
+
+                int e2 = 2 * err;
+                if (e2 > -dy) { err -= dy; x += sx; }
+                if (e2 < dx) { err += dx; y += sy; }
+
+                if (x == x1 && y == y1) break; // 도착 칸은 검사 안 함
+                if (!map.IsWalkable(new Vector2Int(x, y)))
+                    return false; // 중간에 벽이 있으면 시야 막힘
+            }
+            return true;
+        }
     }
 }

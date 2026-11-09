@@ -21,13 +21,27 @@ namespace DungeonCore
         private SpriteRenderer spriteRenderer;
         private Coroutine idleRoutine;
         private bool isPlayingOneShot;
+        private Sprite restSprite; // idle 프레임이 없을 때/1회성 재생 후 복귀할 기본 스프라이트
 
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        /// <summary>idle 프레임을 코드에서 설정 (CharacterClassData로부터 주입).</summary>
+        private SpriteRenderer SR => spriteRenderer != null ? spriteRenderer : (spriteRenderer = GetComponent<SpriteRenderer>());
+
+        /// <summary>
+        /// 기본(대기) 스프라이트 지정. idle 프레임이 없는 캐릭터는 이 스프라이트로 고정되고,
+        /// 걷기/공격 1회성 재생이 끝나면 여기로 복귀한다. (CharacterClassData.baseSprite 주입)
+        /// </summary>
+        public void SetBaseSprite(Sprite s)
+        {
+            restSprite = s;
+            if ((idleFrames == null || idleFrames.Length == 0) && !isPlayingOneShot && s != null)
+                SR.sprite = s;
+        }
+
+        /// <summary>idle 프레임을 코드에서 설정 (CharacterClassData로부터 주입). 빈 배열이면 프레임 루프를 멈춘다.</summary>
         public void SetIdleFrames(Sprite[] frames, float fps)
         {
             idleFrames = frames;
@@ -40,11 +54,20 @@ namespace DungeonCore
             StartIdle();
         }
 
-        /// <summary>대기(idle) 애니메이션을 반복 재생. 프레임이 없으면 아무 것도 안 함.</summary>
+        /// <summary>
+        /// 대기(idle) 애니메이션을 반복 재생. 프레임이 없으면 루프를 멈추고 기본 스프라이트로 돌아간다
+        /// (프리팹에 남아있던 idle 루프가 선택 캐릭터 이미지를 덮어쓰지 않도록).
+        /// </summary>
         public void StartIdle()
         {
-            if (idleFrames == null || idleFrames.Length == 0) return;
-            if (idleRoutine != null) StopCoroutine(idleRoutine);
+            if (idleRoutine != null) { StopCoroutine(idleRoutine); idleRoutine = null; }
+
+            if (idleFrames == null || idleFrames.Length == 0)
+            {
+                if (!isPlayingOneShot && restSprite != null) SR.sprite = restSprite;
+                return;
+            }
+
             idleRoutine = StartCoroutine(LoopFrames(idleFrames, idleFps));
         }
 
@@ -84,6 +107,10 @@ namespace DungeonCore
                 yield return new WaitForSeconds(frameTime);
             }
             isPlayingOneShot = false;
+
+            // idle 프레임이 없으면 기본 스프라이트로 복귀 (걷기 마지막 프레임에서 멈추지 않도록)
+            if ((idleFrames == null || idleFrames.Length == 0) && restSprite != null)
+                spriteRenderer.sprite = restSprite;
         }
     }
 }

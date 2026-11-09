@@ -286,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.MainMenuController
   gameTitle: 4 - DUMGEON
+  uiFont: {fileID: 12800000, guid: 3386e3bf61b512f47a301485374b85f0, type: 3}
 --- !u!4 &1236027184
 Transform:
   m_ObjectHideFlags: 0

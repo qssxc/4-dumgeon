@@ -19,6 +19,9 @@ namespace DungeonCore
     {
         public static TurnManager Instance { get; private set; }
 
+        /// <summary>한 턴 처리(모든 액터 행동)가 끝날 때마다 발생. 화염/독 등 시간 기반 시스템이 구독.</summary>
+        public event System.Action OnTurnCompleted;
+
         private const float ActionCost = 100f;
 
         private readonly List<ITurnActor> actors = new();
@@ -74,6 +77,7 @@ namespace DungeonCore
             }
 
             State = TurnState.WaitingForPlayerInput;
+            OnTurnCompleted?.Invoke();
         }
     }
 }

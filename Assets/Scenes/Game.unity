@@ -119,6 +119,85 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &381231358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 381231361}
+  - component: {fileID: 381231360}
+  - component: {fileID: 381231359}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &381231359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381231358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!114 &381231360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381231358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &381231361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381231358}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +279,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -415,24 +494,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.DungeonBootstrap
   playerPrefab: {fileID: 3794721979966907620, guid: 39e7115a3e1f3ff429dcc1bc66cfddf3, type: 3}
   monsterPrefab: {fileID: 97355644150116190, guid: 7db36847a4206b042808faa11d988f90, type: 3}
-  ratData: {fileID: 11400000, guid: 50843ecbbf240e5428c035a2f000b0ed, type: 2}
-  monsterCount: 3
+  monsterPool:
+  - data: {fileID: 11400000, guid: 5104c83aee952f54c9a0d27bec381368, type: 2}
+    weight: 1
+    minDepth: 0
+  - data: {fileID: 11400000, guid: 50843ecbbf240e5428c035a2f000b0ed, type: 2}
+    weight: 1
+    minDepth: 0
+  - data: {fileID: 11400000, guid: 00792d8b90a070a4a8448a5e26a9b7a4, type: 2}
+    weight: 1
+    minDepth: 0
+  - data: {fileID: 11400000, guid: b3d479d7a54279b4ab3a24ba884fe004, type: 2}
+    weight: 1
+    minDepth: 0
+  monsterCount: 6
   entranceSafeRadius: 4
+  visionRadius: 7
+  trapPrefab: {fileID: -198855792761485620, guid: a6e28893099ae1744b805ab284e11c0e, type: 3}
+  trapPool:
+  - data: {fileID: 11400000, guid: 27fc054c6d72c6d4c8544e79482c63e9, type: 2}
+    weight: 1
+    minDepth: 0
+  - data: {fileID: 11400000, guid: 2a83df4f24eb2504097a5f2fec9b2198, type: 2}
+    weight: 1
+    minDepth: 0
+  trapCount: 6
+  trapDetectionRadius: 2
   itemPickupPrefab: {fileID: 1338294735623707315, guid: b57c4934094066845bf9092ba0481ee8, type: 3}
   itemPool:
-  - {fileID: 11400000, guid: 740b35c3d3b23864bada335ff38536d7, type: 2}
-  - {fileID: 11400000, guid: 23cd34b2694d9454198d0bf44a51d9a2, type: 2}
+  - {fileID: 11400000, guid: 46238dd2acad324419ed7d8bc805ff96, type: 2}
+  - {fileID: 11400000, guid: a9fd6862f6518fc44bb6980ae7ae06c9, type: 2}
+  - {fileID: 11400000, guid: f157f9fd78bce0f4e8268d9eaff5d131, type: 2}
+  - {fileID: 11400000, guid: ea864aaff0098d143bf92bb3b3778e45, type: 2}
+  - {fileID: 11400000, guid: 3569ca546eabc1a4f8526510eb08b054, type: 2}
+  - {fileID: 11400000, guid: 2d77e317201503f41a61946207e5d6b5, type: 2}
+  - {fileID: 11400000, guid: 1f70adb4d8dda714fa33f1d06a3c9cab, type: 2}
   itemSpawnChancePerRoom: 0.35
-  appearancePools:
-  - groupName: Potion
-    appearanceNames:
-    - "\uD0C1\uD55C \uD3EC\uC158"
-    - "\uB9D1\uC740 \uD3EC\uC158"
+  appearances:
+  - {fileID: 11400000, guid: 32cac69c0e610a84ea5839d1a68b8a63, type: 2}
+  - {fileID: 11400000, guid: 8a0471c30857e734b8bc791bd09bb48c, type: 2}
+  - {fileID: 11400000, guid: 4bfa8a395496e4b40af16cb2f7aa86b9, type: 2}
   characterClasses:
   - {fileID: 11400000, guid: bc3ce3508c0c0264d94477169fb25f74, type: 2}
   - {fileID: 11400000, guid: 55b4a65e09b0cb14fb149d9778d71347, type: 2}
   - {fileID: 11400000, guid: 527ea31c771a8954682ecdc6e4f84724, type: 2}
   - {fileID: 11400000, guid: 2c23a1634220ca243bc259a73547fc76, type: 2}
+  uiFont: {fileID: 12800000, guid: 3386e3bf61b512f47a301485374b85f0, type: 3}
+  uiFontTMP: {fileID: 11400000, guid: 131cb1fe48062984b9ac5a67578f55ed, type: 2}
   cameraOrthoSize: 5
 --- !u!4 &728664903
 Transform:
@@ -457,3 +565,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 680595602}
   - {fileID: 728664903}
+  - {fileID: 381231361}

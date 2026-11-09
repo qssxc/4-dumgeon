@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e308177ae6342924f84bed8e01110074, type: 3}
+  m_Name: "\uBC29\uC5B4\uAD6C"
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.EquipmentData
+  itemName: "\uBC29\uC5B4\uAD6C"
+  description: 
+  itemType: 1
+  icon: {fileID: 4922888095369600977, guid: abaec1063b6f00c41878559e9e4fd1da, type: 3}
+  stackable: 0
+  maxStack: 1
+  throwable: 0
+  identifiedByDefault: 1
+  appearanceGroup: 
+  attackBonus: 0
+  defenseBonus: 2
+  minEnhance: 0
+  maxEnhance: 2
+  curseChance: 0.2

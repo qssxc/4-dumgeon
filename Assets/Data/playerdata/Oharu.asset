@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1805842546e000a458b2ce59143b8b97, type: 3}
+  m_Name: Oharu
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCore.CharacterClassData
+  className: "\uC624\uD558\uB8E8"
+  description: 
+  portrait: {fileID: 7776133211028687923, guid: 6f76c148e7748ae48b9b58326b99aaf2, type: 3}
+  baseSprite: {fileID: 7776133211028687923, guid: 6f76c148e7748ae48b9b58326b99aaf2, type: 3}
+  idleFrames: []
+  walkFrames:
+  - {fileID: 1725248110627725106, guid: c8770b8a2dda8c94ca8166514c0a239d, type: 3}
+  - {fileID: -2966976734523220969, guid: c8770b8a2dda8c94ca8166514c0a239d, type: 3}
+  - {fileID: -1075159714272313173, guid: c8770b8a2dda8c94ca8166514c0a239d, type: 3}
+  - {fileID: -8717097609781297636, guid: c8770b8a2dda8c94ca8166514c0a239d, type: 3}
+  attackFrames:
+  - {fileID: 8383728791548804854, guid: 43fc42005432f1b48948d2d23faad028, type: 3}
+  - {fileID: 1178484566701532554, guid: 43fc42005432f1b48948d2d23faad028, type: 3}
+  - {fileID: 3924379319755378845, guid: 43fc42005432f1b48948d2d23faad028, type: 3}
+  - {fileID: -3655603546269753202, guid: 43fc42005432f1b48948d2d23faad028, type: 3}
+  idleFps: 4
+  startingHP: 20
+  startingAttack: 5
+  startingDefense: 2
+  talents:
+  - {fileID: 11400000, guid: e1151d141e1f04c46b3c26e32822ab73, type: 2}
+  - {fileID: 11400000, guid: fb2ccfa57f8357f41b026d47ad2b4ec7, type: 2}
+  - {fileID: 11400000, guid: 4aa4344e4f2c279458a5117ea7c6c4b8, type: 2}
+  - {fileID: 11400000, guid: cd21755d255b2c9489e049a75381e139, type: 2}

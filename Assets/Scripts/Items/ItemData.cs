@@ -6,6 +6,7 @@ namespace DungeonCore
     {
         Weapon,
         Armor,
+        Ring,
         Potion,
         Scroll,
         Wand,
@@ -23,15 +24,17 @@ namespace DungeonCore
         Heal,        // 즉시 체력 회복 (effectAmount만큼)
         Strength,    // 영구 공격력 상승 (effectAmount만큼)
         Haste,       // 일정 턴(effectDuration) 동안 속도 상승 (effectAmount만큼)
-        Fire,        // 환경 효과 (아직 미구현 - 다음 단계)
+        Fire,        // 환경 효과 (던지면 대상 타일 주변에 화염)
     }
 
     /// <summary>
-    /// 아이템의 정적 정보. 몬스터의 MonsterData와 같은 패턴 -
-    /// 개별 상태(수량, 감정 여부)는 여기 안 두고 ItemInstance/IdentifyManager가 담당.
+    /// 모든 아이템 데이터의 공통 베이스 (abstract). 타입별 고유 필드는 서브클래스로 분리:
+    /// EquipmentData(무기/방어구/반지), ConsumableData(포션/스크롤), MiscData(기타).
+    /// abstract라 이 클래스 자체로는 에셋을 만들 수 없다 - 반드시 서브클래스로 생성.
+    ///
+    /// 개별 상태(수량, 감정, 강화, 저주)는 여기 안 두고 ItemInstance/IdentifyManager가 담당.
     /// </summary>
-    [CreateAssetMenu(menuName = "Dungeon/Item", fileName = "NewItem")]
-    public class ItemData : ScriptableObject
+    public abstract class ItemData : ScriptableObject
     {
         [Header("기본 정보")]
         public string itemName = "Item";
@@ -47,19 +50,14 @@ namespace DungeonCore
         public bool throwable = false; // 던질 수 있는 아이템인지 (포션, 투척무기 등)
 
         [Header("감정(Identify)")]
-        [Tooltip("체크하면 항상 감정된 상태로 시작 (무기/방어구/음식 등). 포션/스크롤/반지류는 보통 false.")]
+        [Tooltip("체크하면 항상 감정된 상태로 시작. 포션/스크롤/미감정 장비류는 false.")]
         public bool identifiedByDefault = true;
 
         [Tooltip("미감정 상태일 때 '어떤 이름 풀을 쓸지' 묶는 키. 같은 그룹끼리 매 판마다 랜덤 이름을 나눠 갖는다. 예: 'Potion', 'Scroll'")]
         public string appearanceGroup = "";
 
-        [Header("장비 수치 (Weapon/Armor일 때만 사용)")]
-        public int attackBonus = 0;
-        public int defenseBonus = 0;
-
-        [Header("소비 효과 (Potion/Scroll 등)")]
-        public ConsumableEffect effect = ConsumableEffect.None;
-        public int effectAmount = 0;      // 회복량, 스탯 증가치 등
-        public int effectDuration = 0;    // 버프 지속 턴 수 (신속 등)
+        /// <summary>이 아이템이 장비인지 (무기/방어구/반지). 서브클래스 판정에 사용.</summary>
+        public bool IsEquipment =>
+            itemType == ItemType.Weapon || itemType == ItemType.Armor || itemType == ItemType.Ring;
     }
 }

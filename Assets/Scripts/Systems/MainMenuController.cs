@@ -11,9 +11,12 @@ namespace DungeonCore
     public class MainMenuController : MonoBehaviour
     {
         [SerializeField] private string gameTitle = "PIXEL DUNGEON";
+        [SerializeField] private Font uiFont; // 비워두면 OS 한글 폰트 폴백. Game 씬의 폰트와 맞추려면 같은 폰트 지정.
 
         private void Start()
         {
+            UIFont.SetOverride(uiFont); // MainMenu 씬에서도 지정 폰트 적용
+
             var menu = gameObject.AddComponent<MainMenuUI>();
             menu.gameTitle = gameTitle;
             menu.OnStartPressed += LoadGameScene;

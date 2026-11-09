@@ -7,7 +7,7 @@ namespace DungeonCore
     /// </summary>
     public static class SceneNames
     {
-        public const string MainMenu = "MainMenu";
+        public const string MainMenu = "Main";
         public const string Game = "Game";
     }
 }
